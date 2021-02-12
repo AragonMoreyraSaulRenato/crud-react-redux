@@ -1,25 +1,35 @@
 import { useState } from "react";
 import { crearNuevoProductoAction } from "../actions/productoActions";
 import { useDispatch, useSelector } from "react-redux";
+import {
+	mostrarAlertaAction,
+	ocultarAlertaAction,
+} from "../actions/alertaActions";
 
 export default function NuevoProducto({ history }) {
 	const [nombre, setNombre] = useState("");
 	const [precio, setPrecio] = useState(0);
 	const dispatch = useDispatch();
-	const { loading, error } = useSelector((state) => state.productos);
 
-	const agregarProducto = (producto) =>
-		dispatch(crearNuevoProductoAction(producto));
+	const { loading, error } = useSelector((state) => state.productos);
+	const { alerta } = useSelector((state) => state.alerta);
 
 	const submitNuevoProducto = (e) => {
 		e.preventDefault();
 
 		//validar form
-		if (nombre.trim() === "" || precio <= 0) return;
+		if (nombre.trim() === "" || precio <= 0) {
+			const alerta = {
+				msg: "Ambos campos son obligatorios",
+				classes: "alert alert-danger text-center text-uppercase p3",
+			};
+			dispatch(mostrarAlertaAction(alerta));
+			return;
+		}
 		//si no hay erres
-
+		dispatch(ocultarAlertaAction());
 		//crear nuevo producto
-		agregarProducto({ nombre, precio });
+		dispatch(crearNuevoProductoAction({ nombre, precio }));
 
 		history.push("/");
 	};
@@ -32,6 +42,7 @@ export default function NuevoProducto({ history }) {
 						<h2 className="text-center mb-4 font-weight-bold">
 							Agregar Nuevo Producto
 						</h2>
+						{alerta && <p className={alerta.classes}>{alerta.msg}</p>}
 						<form onSubmit={submitNuevoProducto}>
 							<div className="form-group">
 								<label>Nuevo Producto</label>

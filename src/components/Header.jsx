@@ -6,7 +6,7 @@ export default function Header() {
 			<div className="container">
 				<h1>
 					<Link to="/" className="text-light">
-						CRUD - React, Redux, REST API & Axios
+						CRUD - React, Redux & Axios
 					</Link>
 				</h1>
 			</div>
